@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../componenets/Header'
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function Indexpage() {
 
@@ -17,7 +18,7 @@ function Indexpage() {
     <>
       <div className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-8 mt-16 w-[93%] mx-auto'>
         {places.length > 0 && places.map(place => (
-          <div key={place._id} className='cursor-pointer'>
+          <Link to={'/place/' + place._id} key={place._id} className='cursor-pointer'>
             {place.photos?.[0] && (
               <img src={"http://localhost:4000/uploads/" + place.photos?.[0]} alt="" className='object-cover aspect-square rounded-2xl shadow-2xl transition-transform transform hover:scale-[1.05] duration-400' />
             )}
@@ -29,7 +30,7 @@ function Indexpage() {
                   ${place.price}</span>/ per night
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </>

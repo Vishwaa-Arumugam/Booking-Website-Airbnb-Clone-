@@ -1,12 +1,14 @@
 import axios from 'axios';
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 
 function Registerpage() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [redirect, setRedirect] = useState(false);
+  const navigate = useNavigate();
 
   async function registerUser(e) {
     e.preventDefault();
@@ -16,11 +18,17 @@ function Registerpage() {
         email,
         password,
       })
+      alert('Registration Successfull');
+      navigate('/login');
      
     } catch(error) {
         console.log("An error occured while sending user's registration data to the server", error);
     }
 
+  }
+
+  if(redirect){
+    <Navigate to={'/login'}/>
   }
 
   return (

@@ -44,6 +44,7 @@ function Header() {
           )}
         </Link>
       </div>
+      <hr className='mt-12' />
     </div>
   )
 }

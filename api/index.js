@@ -7,6 +7,8 @@ const Places = require("./models/Place.js");
 const User = require("./models/User.js");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
+const authenticateUser = require("./middleware.js");
+const Bookingmodel = require("./models/booking.js");
 // const { ObjectId } = mongoose.Types;
 const fs = require("fs");
 const imageDownloader = require("image-downloader");
@@ -173,7 +175,7 @@ app.get('/places', (req, res) => {
         if (err) throw err;
         const id = user.id;
         const place = await Places.find({ owner: id });
-        console.log(place);
+        // console.log(place);
         res.json(place);
     });
 });
@@ -221,8 +223,41 @@ app.put('/places/:id', (req, res) => {
     }
 })
 
-app.get('/index-places', async (req, res) => {
+app.get('/index-places' ,async (req, res) => {
     res.json(await Places.find());
+});
+
+app.post('/booking', async (req, res) => {
+    const userData = await getUserdataFromToken(req);
+    const {id,place,checkindate,checkoutdate,guests,name,mobile,price} = req.body;
+    await Bookingmodel.create({
+        place:place,
+        checkin:checkindate,
+        checkout:checkoutdate,
+        numberOfguests:guests,
+        name:name,  
+        phonenumber:mobile,
+        price:price,
+        user:userData.id,
+    }).then((response) => {
+        res.json(response);
+    }).catch((err) => {
+        console.log(err);
+    })
+});
+
+function getUserdataFromToken(req){
+    return new Promise((resolve, reject) => {
+        jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
+            if(err) throw err;
+            resolve(userData);
+        });
+    });
+}
+
+app.get('/bookings', async (req, res) => {
+    const userData = await getUserdataFromToken(req);
+    res.json( await Bookingmodel.find({user:userData.id}).populate('place') )
 });
 
 app.listen(4000, () => {

@@ -10,23 +10,30 @@ function Loginpage() {
   const navigate = useNavigate();
   const {setUser} = useContext(UserContext);
 
-  async function handleUserLogin(e){
-      e.preventDefault();
-      console.log(email,password,);
-      try{
-        const {data} = await axios.post('/login', {
-          email,
-          password,
-        })
-        console.log(data);
-        setUser(data);
-        alert('Login successfull');
-        navigate("/");
-        
-      } catch(error) {
-        console.log("An error occured when sending login credentials to the server", error);
-      }
-  }
+  async function handleUserLogin(e) {
+    e.preventDefault();
+    console.log(email, password);
+    try {
+        const { data } = await axios.post('/login', {
+            email,
+            password,
+        });
+
+        if (data === "password not ok") {
+            alert("Incorrect password");
+        } else if (data === "not found") {
+            alert("User not found");
+        } else {
+            console.log(data);
+            setUser(data);
+            alert('Login successful');
+            navigate("/");
+        }
+    } catch (error) {
+        console.log("An error occurred when sending login credentials to the server", error);
+    }
+}
+
 
   return (
     <div className='mt-4 grow flex items-center justify-around mb-64'>
